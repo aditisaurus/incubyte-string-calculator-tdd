@@ -16,4 +16,9 @@ describe("StringCalculator", () => {
      const calculator = new StringCalculator();
      expect(calculator.add("1,5")).toBe(6);
    });
+
+   test("should handle three numbers", () => {
+     const calculator = new StringCalculator();
+     expect(calculator.add("1,2,3")).toBe(6);
+   });
 });
