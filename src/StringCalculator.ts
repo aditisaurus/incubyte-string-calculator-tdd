@@ -1,36 +1,32 @@
 export class StringCalculator {
   add(numbers: string): number {
-    if (numbers === "") {
-      return 0;
+    if (numbers === "") return 0;
+
+    const { delimiter, numbersText } = this.extractDelimiter(numbers);
+    const normalizedText = numbersText.split("\n").join(delimiter);
+    const nums = normalizedText.split(delimiter).map((n) => parseInt(n));
+
+    this.checkForNegatives(nums);
+
+    return nums.reduce((sum, num) => sum + num, 0);
+  }
+
+  private extractDelimiter(input: string) {
+    if (!input.startsWith("//")) {
+      return { delimiter: ",", numbersText: input };
     }
 
-    let delimiter: string = ",";
-    let numbersToProcess: string = numbers;
+    const newlineIndex = input.indexOf("\n");
+    return {
+      delimiter: input.slice(2, newlineIndex),
+      numbersText: input.slice(newlineIndex + 1),
+    };
+  }
 
-    // Check for custom delimiter format: //[delimiter]\n[numbers]
-    if (numbers.startsWith("//")) {
-      const delimiterLineEnd: number = numbers.indexOf("\n");
-      delimiter = numbers.substring(2, delimiterLineEnd);
-      numbersToProcess = numbers.substring(delimiterLineEnd + 1);
-    }
-
-    // Replace newlines with current delimiter to normalize
-    const normalizedNumbers: string = numbersToProcess.replace(
-      /\n/g,
-      delimiter
-    );
-
-    const parts: string[] = normalizedNumbers.split(delimiter);
-
-    // Check for negative numbers
-    const numbersArray: number[] = parts.map((num: string) => parseInt(num));
-    const negatives: number[] = numbersArray.filter((num: number) => num < 0);
-
+  private checkForNegatives(numbers: number[]): void {
+    const negatives = numbers.filter((n) => n < 0);
     if (negatives.length > 0) {
       throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
     }
-
-    return numbersArray.reduce((sum: number, num: number) => sum + num, 0);
   }
 }
-
