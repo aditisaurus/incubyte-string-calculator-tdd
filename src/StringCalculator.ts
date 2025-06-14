@@ -4,11 +4,21 @@ export class StringCalculator {
       return 0;
     }
 
-    // Replace new lines with commas to normalize
-    const normalizedNumbers: string = numbers.split("\n").join(",");
+    let delimiter: string = ",";
+    let numbersToProcess: string = numbers;
 
-    const parts: string[] = normalizedNumbers.split(",");
+    // Check for custom delimiter format: //[delimiter]\n[numbers]
+    if (numbers.startsWith("//")) {
+      const delimiterLineEnd: number = numbers.indexOf("\n");
+      delimiter = numbers.substring(2, delimiterLineEnd);
+      numbersToProcess = numbers.substring(delimiterLineEnd + 1);
+    }
 
+    // Replace new lines with current delimiter to normalize
+    const normalizedNumbers: string = numbersToProcess.split("\n").join(",");
+    const parts: string[] = normalizedNumbers.split(delimiter);
     return parts.reduce((sum: number, num: string) => sum + parseInt(num), 0);
   }
 }
+
+
