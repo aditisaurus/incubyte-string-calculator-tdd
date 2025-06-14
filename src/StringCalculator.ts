@@ -14,11 +14,23 @@ export class StringCalculator {
       numbersToProcess = numbers.substring(delimiterLineEnd + 1);
     }
 
-    // Replace new lines with current delimiter to normalize
-    const normalizedNumbers: string = numbersToProcess.split("\n").join(",");
+    // Replace newlines with current delimiter to normalize
+    const normalizedNumbers: string = numbersToProcess.replace(
+      /\n/g,
+      delimiter
+    );
+
     const parts: string[] = normalizedNumbers.split(delimiter);
-    return parts.reduce((sum: number, num: string) => sum + parseInt(num), 0);
+
+    // Check for negative numbers
+    const numbersArray: number[] = parts.map((num: string) => parseInt(num));
+    const negatives: number[] = numbersArray.filter((num: number) => num < 0);
+
+    if (negatives.length > 0) {
+      throw new Error(`negative numbers not allowed ${negatives.join(",")}`);
+    }
+
+    return numbersArray.reduce((sum: number, num: number) => sum + num, 0);
   }
 }
-
 
